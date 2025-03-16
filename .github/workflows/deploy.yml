@@ -14,13 +14,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 🛠 Test SSH connection
-        run: ssh -i ~/.ssh/gh_actions -o StrictHostKeyChecking=no "${{ secrets.SSH_USER }}"@lucasrblt.me "echo 'SSH connection successful'"
+        run: ssh -i ~/.ssh/gh-actions -o StrictHostKeyChecking=no "${{ secrets.SSH_USER }}"@lucasrblt.me "echo 'SSH connection successful'"
 
       - name: 🔑 Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/gh_actions
-          chmod 600 ~/.ssh/gh_actions
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/gh-actions
+          chmod 600 ~/.ssh/gh-actions
           ssh-keyscan -H "lucasrblt.me" >> ~/.ssh/known_hosts
 
       - name: 📂 Déploiement via SSH
