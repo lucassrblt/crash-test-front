@@ -19,4 +19,4 @@ jobs:
       - name: Deploy to FTP
         run: |
           chmod +x deploy.sh
-          ./deploy.sh ${{ secrets.FTP_HOST }} ${{ secrets.FTP_USERNAME }} ${{ secrets.FTP_PASSWORD }} ./ /home/zuwu8134/sites/crash-test-front
+          ./deploy.sh ${{ secrets.FTP_HOST }} ${{ secrets.FTP_USERNAME }} ${{ secrets.FTP_PASSWORD }} ./ /sites/crash-test-front
