@@ -1,5 +1,3 @@
-name: 🚀 Deploy on push
-
 on:
   push:
     branches:
@@ -13,22 +11,14 @@ jobs:
       - name: 🚀 Checkout repo
         uses: actions/checkout@v4
 
-      - name: 📦 Setup Node.js
-        uses: actions/setup-node@v3
+      - name: 🔑 Deploy using SSH
+        uses: appleboy/ssh-action@v1.0.0
         with:
-          node-version: "18"
-
-      - name: 🛠️ Install dependencies
-        run: npm install
-
-      - name: 🏗️ Build project
-        run: npm run build
-
-      - name: 📂 FTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: lucasrblt.me
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
-          server-dir: /home/zuwu8134/sites/crash-test-front/
+          host: lucasrblt.me
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd /home/zuwu8134/sites/crash-test-front
+            git pull origin prod
+            npm install
+            npm run build
