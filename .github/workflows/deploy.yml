@@ -1,3 +1,5 @@
+name: Deploy
+
 on:
   push:
     branches:
@@ -8,17 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🚀 Checkout repo
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: 🔑 Deploy using SSH
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: lucasrblt.me
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            cd /home/zuwu8134/sites/crash-test-front
-            git pull origin prod
-            npm install
-            npm run build
+      - name: Set up LFTP
+        run: sudo apt-get install -y lftp
+
+      - name: Deploy to FTP
+        run: |
+          chmod +x deploy.sh
+          ./deploy.sh ${{ secrets.FTP_HOST }} ${{ secrets.FTP_USERNAME }} ${{ secrets.FTP_PASSWORD }} ./ /your.domain.com/src
