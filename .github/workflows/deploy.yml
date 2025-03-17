@@ -3,7 +3,7 @@ name: 🚀 Deploy on push
 on:
   push:
     branches:
-      - prod
+      - dev
 
 jobs:
   deploy:
@@ -13,29 +13,22 @@ jobs:
       - name: 🚀 Checkout repo
         uses: actions/checkout@v4
 
-      - name: 🔑 Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H "lucasrblt.me" >> ~/.ssh/known_hosts
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
 
-          echo "Host lucasrblt.me
-            IdentityFile ~/.ssh/id_rsa
-            StrictHostKeyChecking no" > ~/.ssh/config
+      - name: 🛠️ Install dependencies
+        run: npm install
 
-      - name: 📦 Install sshpass
-        run: sudo apt-get install -y sshpass
+      - name: 🏗️ Build project
+        run: npm run build
 
-      - name: 🛠 Test SSH connection
-        run: sshpass -p "${{ secrets.SSH_PASSPHRASE }}" ssh "${{ secrets.SSH_USER }}"@lucasrblt.me "echo 'SSH connection successful'"
-
-      - name: 📂 Déploiement via SSH
-        run: |
-          sshpass -p "${{ secrets.SSH_PASSPHRASE }}" ssh ${{ secrets.SSH_USER }}@lucasrblt.me << 'EOF'
-          cd /home/zuwu8134/sites/crash-test-front
-          git pull origin prod
-          npm install 
-          npm run build
-          npm run dev
-          EOF
+      - name: 📂 FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: lucasrblt.me
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: /home/zuwu8134/sites/crash-test-front/
