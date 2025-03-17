@@ -2,7 +2,7 @@ name: 🚀 Deploy File to cPanel
 on:
   push:
     branches:
-      - master
+      - prod
 jobs:
   FTP-Deploy-Action:
     name: 🎉 Deploy
@@ -14,10 +14,10 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Use Node.js 16
+      - name: Use Node.js 21
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "21"
 
       - name: Cache npm dependencies
         uses: actions/cache@v3
