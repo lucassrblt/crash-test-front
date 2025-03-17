@@ -1,39 +1,37 @@
-name: 🚀 Deploy File to cPanel
+name: Deploy to cPanel
+
 on:
   push:
     branches:
-      - prod
+      - master
+
 jobs:
-  FTP-Deploy-Action:
-    name: 🎉 Deploy
+  deploy:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+
     steps:
-      - name: 🚚 Get latest code
+      - name: Checkout Code 🚚
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
 
-      - name: Use Node.js 21
-        uses: actions/setup-node@v3
-        with:
-          node-version: "21"
+      - name: Install Dependencies 📦
+        run: npm install
 
-      - name: Cache npm dependencies
-        uses: actions/cache@v3
-        id: cache-node-modules
-        with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - name: Build React App 🏗️
+        run: npm run build
 
-      - name: 🔨 Install Dependencies
-        if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: |
-          npm install
-          git reset --hard
-      - name: 📂 Sync folders and files to the server
-        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+      - name: Upload to cPanel 📂
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /home/sites/crash-test-front
+          exclude: |
+            **/.git**
+            **/.git*/**
+            **/node_modules/**
+            **/.**
