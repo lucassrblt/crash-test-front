@@ -31,11 +31,11 @@ jobs:
         run: sshpass -p "${{ secrets.SSH_PASSPHRASE }}" ssh "${{ secrets.SSH_USER }}"@lucasrblt.me "echo 'SSH connection successful'"
 
       - name: 📂 Déploiement via SSH
-      run: |
-        sshpass -p "${{ secrets.SSH_PASSPHRASE }}" ssh ${{ secrets.SSH_USER }}@lucasrblt.me << 'EOF'
-        cd /home/zuwu8134/sites/crash-test-front
-        git pull origin prod
-        npm install 
-        npm run build
-        npm run dev
-        EOF
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSPHRASE }}" ssh ${{ secrets.SSH_USER }}@lucasrblt.me << 'EOF'
+          cd /home/zuwu8134/sites/crash-test-front
+          git pull origin prod
+          npm install 
+          npm run build
+          npm run dev
+          EOF
